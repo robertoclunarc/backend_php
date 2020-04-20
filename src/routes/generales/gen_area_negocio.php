@@ -15,8 +15,9 @@ $app->get('/api/areanegocio', function(Request $request, Response $response){
         $ejecutar = $db->query($consulta);
         $users = $ejecutar->fetchAll(PDO::FETCH_OBJ);
         $db = null;
-
-        echo json_encode($users);
+      /*   $data = $request->getAttribute('foo');
+        print_r($data); */
+        //echo json_encode($users);
 
     }
     catch(PDOException $error){
