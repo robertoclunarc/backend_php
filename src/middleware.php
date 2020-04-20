@@ -21,6 +21,9 @@ $app->add(function($request, $response, $next) {
         $methods[] = $request->getMethod();
     }
 
+    if ($request->getAttribute('auth-token') == "") {
+        $response->getBody()->write("No autorizado!");
+    }
     
     //$request = $request->withAttribute('foo'," {idToken: 'algo', token:'123456'}");
 
@@ -43,7 +46,7 @@ $app->add(function($request, $response, $next) {
     //******************** 
 
     //realizar  el consumo de la API pasandole los datos 
-    $response = $next($request, $response);
+   // $response = $next($request, $response);
 
     return $response->withHeader('Access-Control-Allow-Origin', '*')
             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
