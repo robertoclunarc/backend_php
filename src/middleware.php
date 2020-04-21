@@ -1,9 +1,13 @@
+
+
 <?php
 // This is the middleware
 // It will add the Access-Control-Allow-Methods header to every request
 //https://www.slimframework.com/docs/v3/cookbook/enable-cors.html
 
-$app->add(function($request, $response, $next) {
+
+
+$app->add(function ($request, $response, $next) {
     $route = $request->getAttribute("route");
 
     $methods = [];
@@ -21,14 +25,14 @@ $app->add(function($request, $response, $next) {
         $methods[] = $request->getMethod();
     }
 
-    if ($request->getAttribute('auth-token') == "") {
+    /*  if ($request->getAttribute('auth-token') == "") {
         $response->getBody()->write("No autorizado!");
-    }
-    
+    } */
+
     //$request = $request->withAttribute('foo'," {idToken: 'algo', token:'123456'}");
 
     //Ejecutar la llamada a el consumo del API
-   /*  $curl = curl_init();
+    /*  $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, "https://jsonplaceholder.typicode.com/posts");
     curl_setopt($curl, CURLOPT_POST, 1);
     curl_setopt($curl, CURLOPT_HTTPHEADER, array(
@@ -46,11 +50,18 @@ $app->add(function($request, $response, $next) {
     //******************** 
 
     //realizar  el consumo de la API pasandole los datos 
-   // $response = $next($request, $response);
+     $response = $next($request, $response);
+
+    //$utiles = new util();
+
+    //$result = $utiles->callAPI('GET', 'https://jsonplaceholder.typicode.com/posts/', false, false);
+
+    //$response->getBody()->write($result);
+
 
     return $response->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-            //->withHeader("Access-Control-Allow-Methods", implode(",", $methods));
-            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-            /* ->withHeader('x-access-token', '123456'); */
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        //->withHeader("Access-Control-Allow-Methods", implode(",", $methods));
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    /* ->withHeader('x-access-token', '123456'); */
 });
