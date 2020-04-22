@@ -254,10 +254,10 @@ class util
 
         // EXECUTE:
         $result = curl_exec($curl);
-        if (!$result) {
+      /*   if (!$result) {
             die("Connection Failure");
-        }
+        } */
         curl_close($curl);
-        return $result;
+        return json_decode($result);
     }
 }

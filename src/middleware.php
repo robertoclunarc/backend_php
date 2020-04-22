@@ -50,15 +50,23 @@ $app->add(function ($request, $response, $next) {
     //******************** 
 
     //realizar  el consumo de la API pasandole los datos 
-     $response = $next($request, $response);
-
-    //$utiles = new util();
-
-    //$result = $utiles->callAPI('GET', 'https://jsonplaceholder.typicode.com/posts/', false, false);
-
-    //$response->getBody()->write($result);
 
 
+    $utiles = new util();
+    $result = new stdClass();
+    //$result = ($utiles->callAPI('GET', 'https://jsonplaceholder.typicode.com/posts/1', false, false));
+    //print_r($request->getAttribute('auth-token'));
+    //$result = $utiles->callAPI('GET', 'http://localhost:3000/api/auth/verify', false, $request->getAttribute('auth-token'));
+    //$result = ($utiles->callAPI('POST', 'http://localhost:3000/api/solped', false, false));
+    //print_r($result);
+  /*   if (!$result || property_exists($result, "err")) {
+        $response->getBody()->write("No autorizado");
+        return $response; 
+    } */
+
+
+
+    $response = $next($request, $response);
     return $response->withHeader('Access-Control-Allow-Origin', '*')
         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
         //->withHeader("Access-Control-Allow-Methods", implode(",", $methods));
