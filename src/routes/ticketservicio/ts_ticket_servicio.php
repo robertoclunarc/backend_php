@@ -1,6 +1,13 @@
 <?php
+/* 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, DELETE, PUT');
+header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
+header('Access-Control-Allow-Credentials: true'); */
+
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Http\UploadedFile;
 
 
 $app->get('/api/tickets', function (Request $request, Response $response) {
@@ -49,7 +56,7 @@ $app->post('/api/rolesinsertaruno', function (Request $request, Response $respon
     $nombre = $request->getParam("nombre");
     $descripcion = $request->getParam("descripcion");
     $estatus = $request->getParam("estatus");
-    $idmenu = $request->getParam("idSegMenu"); 
+    $idmenu = $request->getParam("idSegMenu");
     $auditable = $request->getParam("auditable");
 
     $consulta = "INSERT INTO seg_roles
@@ -163,9 +170,8 @@ $app->get('/api/ticketsporgerencia/{idgerencia}', function (Request $request, Re
 });
 
 $app->get('/api/algo', function (Request $request, Response $response) {
-    
-    echo '{"error": {"text":' . "algo" . '}}';
 
+    echo '{"error": {"text":' . "algo" . '}}';
 });
 
 $app->get('/api/ticketshisRecibidos/{idgerencia}', function (Request $request, Response $response) {
@@ -188,7 +194,6 @@ $app->get('/api/ticketshisRecibidos/{idgerencia}', function (Request $request, R
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }
-
 });
 
 $app->get('/api/ticketshisEnviados/{idgerencia}', function (Request $request, Response $response) {
@@ -211,7 +216,6 @@ $app->get('/api/ticketshisEnviados/{idgerencia}', function (Request $request, Re
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }
-
 });
 
 $app->get('/api/ticketsenviados/{idgerencia}', function (Request $request, Response $response) {
@@ -224,7 +228,7 @@ $app->get('/api/ticketsenviados/{idgerencia}', function (Request $request, Respo
                     WHERE idGerenciaOrigen = $idgerencia
                     AND ((tickets.IdEstadoActual >= 1 and tickets.IdEstadoActual < 6) OR (tickets.IdEstadoActual = 10))
                     ORDER BY orden_mod, idEstadoActual ASC";
-//and tickets.idEstadoActual <> 9 and tickets.idEstadoActual > 0
+    //and tickets.idEstadoActual <> 9 and tickets.idEstadoActual > 0
 
 
     try {
@@ -255,7 +259,7 @@ $app->get('/api/ticketsrecibidos/{idgerencia}/{idusuario}', function (Request $r
                     OR (tickets.idGerenciaDestino IN (SELECT gt.idConfigGerencia FROM config_gerencias_temporales gt WHERE gt.idSegUsuario = $idusuario))
                 ORDER BY orden, tickets.idEstadoActual ASC, tickets.idTicketServicio DESC";
 
-/*AND tickets.estadoActual <> 'Registrado'
+    /*AND tickets.estadoActual <> 'Registrado'
 AND tickets.estadoActual <> 'Anulado'
 AND tickets.estadoActual <> 'Rechazado'
 AND tickets.IdEstadoActual <> '6'
@@ -493,49 +497,46 @@ $app->delete('/api/ticket/{id}', function (Request $request, Response $response)
 $app->post('/api/subirimagenesticket/{archAnterior}', function (Request $request, Response $response) {
 
 
+    //printf("algo");
+
     $files = $request->getUploadedFiles();
-    $archivoAnterior = $request->getAttribute('archAnterior');
 
     if (empty($files['imgsTickets'])) {
         throw new Exception('Expected a newfile');
     }
 
-    //print_r($files);
-
     foreach ($files['imgsTickets'] as $file) {
-        $newfile = $file;
-        //echo $newfile->getClientFilename();
-        //$files['imgsTickets'];
-        if ($newfile->getError() === UPLOAD_ERR_OK) {
-            $uploadFileName = $newfile->getClientFilename();
-           /* if ($archivoAnterior != "-1") {
-                if (file_exists("../public/subidos/imgstickets/$archivoAnterior")) {
-                    unlink("../public/subidos/imgstickets/$archivoAnterior");
-                }
-            }*/
-           /* if (file_exists("../public/subidos/imgstickets/$archivoAnterior")) {
-                unlink("../public/subidos/imgstickets/$archivoAnterior");
-            }*/
-            $newfile->moveTo("../public/subidos/imgstickets/$uploadFileName");
 
-           /* $resize = new ResizeImage("../public/subidos/imgstickets/$uploadFileName");
-            $resize->resizeTo(300, 200);
-            $resize->saveImage("../public/subidos/imgstickets/$uploadFileName"); sss*/
+        if ($file->getError() === UPLOAD_ERR_OK) {
+            $filename = moveUploadedFile("../public/subidos/imgstickets/", $file);
+            //$response->write('uploaded ' . $filename . '<br/>');
         }
-        echo '{"nombreArchivo": "' . $uploadFileName . '"}';
+        echo '{"nombreArchivo": "' . $filename . '"}';
+        //return $response->withJson(json_decode('{"nombreArchivo": "' . $uploadFileName . '"}'));
     }
-
 });
 
-$app->post('/api/imagsdbticket', function(Request $request, Response $response){
-    
+function moveUploadedFile($directory, UploadedFile $uploadedFile)
+{
+    $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+    $basename = bin2hex(random_bytes(8)); // see http://php.net/manual/en/function.random-bytes.php
+    //$filename = sprintf('%s.%0.8s', $basename, $extension);
+    $filename = $uploadedFile->getClientFilename();
+
+    $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
+
+    return $filename;
+}
+
+$app->post('/api/imagsdbticket', function (Request $request, Response $response) {
+
     $nombre_imagen = $request->getParam("nombre_imagen");
     $direccion = $request->getParam("direccion");
     $idTicketServicio = $request->getParam("idTicketServicio");
     $img = $request->getParam("img");
-  
-   
-   $consulta = "INSERT INTO ts_imgs_ticket_servicio
+
+
+    $consulta = "INSERT INTO ts_imgs_ticket_servicio
                     (
                         nombre_imagen,
                         direccion,
@@ -551,7 +552,7 @@ $app->post('/api/imagsdbticket', function(Request $request, Response $response){
                     )
                 ";
 
-    try{
+    try {
 
         $db = new db();
         $db = $db->conectar();
@@ -563,7 +564,7 @@ $app->post('/api/imagsdbticket', function(Request $request, Response $response){
         $sentencia->bindParam(":direccion", $direccion);
         $sentencia->bindParam(":idTicketServicio", $idTicketServicio);
         $sentencia->bindParam(":img", $img);
-    
+
         $sentencia->execute();
 
         $id_insertado = $db->lastInsertId();
@@ -571,10 +572,8 @@ $app->post('/api/imagsdbticket', function(Request $request, Response $response){
 
         $rol = array('ObjectId' => $id_insertado);
         echo json_encode($rol);
-
-    }
-    catch(PDOException $error){
-        echo '{"error": {"text":' .$error->getMessage() .'}}';  
+    } catch (PDOException $error) {
+        echo '{"error": {"text":' . $error->getMessage() . '}}';
     }
 });
 

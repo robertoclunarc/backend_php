@@ -4,9 +4,6 @@ ini_set('display_errors', 1);
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-
-use Slim\Http\UploadedFile;
-
 require '../vendor/autoload.php';
 require '../src/config/db.php';
 require '../src/config/dbGlobal.php';

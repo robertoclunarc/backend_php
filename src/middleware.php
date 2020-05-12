@@ -1,11 +1,7 @@
-
-
 <?php
 // This is the middleware
 // It will add the Access-Control-Allow-Methods header to every request
 //https://www.slimframework.com/docs/v3/cookbook/enable-cors.html
-
-
 
 $app->add(function ($request, $response, $next) {
     $route = $request->getAttribute("route");
@@ -65,11 +61,17 @@ $app->add(function ($request, $response, $next) {
     } */
 
 
-
+    
     $response = $next($request, $response);
-    return $response->withHeader('Access-Control-Allow-Origin', '*')
+    return $response
+        ->withHeader('Access-Control-Allow-Origin', '*')
         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-        //->withHeader("Access-Control-Allow-Methods", implode(",", $methods));
-        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    /* ->withHeader('x-access-token', '123456'); */
+        //->withHeader("Access-Control-Allow-Methods", implode(",", $methods))
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+        ->withHeader('Access-Control-Allow-Credentials', 'true');
+       /*  ->withHeader('Access-Control-Allow-Origin', '*')
+        ->withHeader('Access-Control-Allow-Credentials', true)
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS')
+        ->withHeader('Content-Type', 'application/json'); */
 });

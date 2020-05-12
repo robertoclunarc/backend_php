@@ -248,6 +248,8 @@ $app->post('/api/login', function (Request $request, Response $response) {
     $usuario = $request->getParam('usuario');
     $contrasenia = $request->getParam('contrasenia');
 
+    
+
     $consulta = "SELECT u.*,
                     (SELECT cargos.idConfigGerencia FROM config_cargos cargos WHERE cargos.idConfigCargo = u.idConfigCargo) idGerencia
                  FROM seg_usuarios as u WHERE 
