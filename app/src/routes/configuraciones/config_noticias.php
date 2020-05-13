@@ -103,7 +103,7 @@ $app->post('/api/noticia', function (Request $request, Response $response) {
 
         $sentencia->execute();
 
-        //$id_insertado = $db->lastInsertId();
+        $id_insertado = $db->lastInsertId();
         //Ultimo row insertado
         $ejecutar = $db->query("SELECT * from config_noticias WHERE idConfigNoticia = " . $db->lastInsertId());
         $newNoticia = $ejecutar->fetchAll(PDO::FETCH_OBJ); 
@@ -111,9 +111,9 @@ $app->post('/api/noticia', function (Request $request, Response $response) {
         $db = null;
 
         //return $response->withJson(['success' => $success]);
-        return $response->withJson($newNoticia);
-        //$rol = array('ObjectId' => $id_insertado);
-        //echo json_encode($rol);
+        //return $response->withJson($newNoticia);
+        $rol = array('ObjectId' => $id_insertado);
+        echo json_encode($rol);
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }

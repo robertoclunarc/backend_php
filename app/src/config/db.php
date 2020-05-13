@@ -10,10 +10,10 @@
         private $port = '';
 
         function __construct() {
-            $this->host = isset($_SERVER["MYSQL_SERVER"]) ? $_SERVER["MYSQL_SERVER"] : "10.10.0.7"; //"localhost";;
+            $this->host = isset($_SERVER["MYSQL_SERVER"]) ? $_SERVER["MYSQL_SERVER"] : "localhost";;
             $this->db = isset($_SERVER["MYSQL_DB"]) ? $_SERVER["MYSQL_DB"] : "intranet";
             $this->user = isset($_SERVER["MYSQL_USER"]) ?$_SERVER["MYSQL_USER"] : "root";
-            $this->password = isset($_SERVER["MYSQL_PW"]) ?$_SERVER["MYSQL_PW"] : ".4C3r04dm1n"; //"root"; 
+            $this->password = isset($_SERVER["MYSQL_PW"]) ?$_SERVER["MYSQL_PW"] : "root"; 
             $this->port = isset($_SERVER["MYSQL_PORT"]) ?$_SERVER["MYSQL_PORT"] : "3306";
         }
 

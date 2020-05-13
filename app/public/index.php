@@ -109,6 +109,8 @@ require '../src/routes/compras/compras_sol_ped_detalle.php';
 require '../src/routes/compras/compras_sol_ped_trazas.php';
 require '../src/routes/generales/gen_centro_costos.php';
 require '../src/routes/generales/gen_empresa.php';
+require '../src/routes/generales/gen_preguntas.php';
+require '../src/routes/generales/gen_respuestas.php';
 require '../src/routes/compras/compras_empresa.php';
 require '../src/routes/generales/gen_area_negocio.php';
 require '../src/routes/compras/compras_sol_ped_estados.php';
