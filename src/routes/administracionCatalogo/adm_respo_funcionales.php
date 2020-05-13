@@ -38,7 +38,7 @@ $app->get('/api/respofunporprod/{idAdmProducto}', function (Request $request, Re
         $result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
         $db = null;
 
-        $response->withJson($result);
+        return $response->withJson($result);
         
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';

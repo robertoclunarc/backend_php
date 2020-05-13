@@ -186,10 +186,15 @@ $app->put('/api/noticia/{id}', function (Request $request, Response $response) {
 
         $sentencia->execute();
 
-        $parsedBody = $request->getParsedBody();
+        $ejecutar = $db->query("SELECT * from config_noticias WHERE idConfigNoticia = " . $id_noticia);
+        $updatedNoticia = $ejecutar->fetchAll(PDO::FETCH_OBJ); 
+
+        $db = null;
+
+        //$parsedBody = $request->getParsedBody();
        // print_r(json_encode($parsedBody));
-       //return $response->withJson($parsedBody);
-       echo '{"message": {"text": "Noticia eliminado correctamente"}}';
+       return $response->withJson($updatedNoticia);
+       //echo '{"message": {"text": "Noticia eliminado correctamente"}}';
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }
