@@ -1,0 +1,49 @@
+#Version del docker compose
+version: "3.3"
+
+services:
+    nginx-back:
+        image: tutum/nginx
+        container_name: nginx_back
+        restart: always
+
+        links:
+            - phpfpm
+        volumes:
+            - ./nginx/back/default:/etc/nginx/sites-available/default
+            - ./nginx/back/default:/etc/nginx/sites-enabled/default
+            - ./logs/back/nginx-error.log:/var/log/nginx/error.log
+            - ./logs/back/nginx-access.log:/var/log/nginx/access.log
+        ports:   
+            - 82:80
+        networks:
+            - webnet            
+    
+    phpfpm:
+        # interprete de php conectado al nginx del backend
+        build: ./php
+        container_name: php7_fpm_pdo
+        restart: always
+        expose:
+            #Nginx se comunica con el contenedor de php de forma interna
+            - 9000
+        volumes:
+            # Los archivos del BACK deben copiarse en la carpeta /backend
+            # en este caso como los archivos .php debe interpretarlos este contenedor se asocia la carpeta acá
+            - ./subidos:/usr/share/nginx/html/public/subidos
+            - ./app:/usr/share/nginx/html
+            - ./php/site.ini:/usr/local/etc/php/conf.d/site.ini
+        networks:
+            - webnet            
+        environment: 
+            - MYSQL_SERVER=10.10.0.7
+            - MYSQL_PORT=3306
+            - MYSQL_DB=intranet
+            - MYSQL_USER=root
+            - MYSQL_PW=.4C3r04dm1n
+            # si se necesita trabajar con la base de datos local solo cambiar el valor de la variable DEPLOYMENT, no borrarla
+            - DEPLOYMENT=dev
+        
+networks:
+    webnet:            
+    

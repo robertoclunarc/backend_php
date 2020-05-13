@@ -1,0 +1,1 @@
+mkdir -p logs/back && touch logs/back/nginx-{access,error}.log
