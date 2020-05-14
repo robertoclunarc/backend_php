@@ -1,4 +1,4 @@
 subidos/*
 logs/*
-app/src/config/db.php
-app/src/config/dbGlobal.php
+./app/src/config/db.php
+./app/src/config/dbGlobal.php
