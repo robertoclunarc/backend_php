@@ -406,6 +406,7 @@ $app->post('/api/subirimgpropia/{archAnterior}', function (Request $request, Res
         $newfile->moveTo("../public/subidos/fotosusers/$uploadFileName");
 
         //Cambiar el tamaño de la imagen una vez guardada en la carpeta
+        //es posible que aqui sea elproblema 
       /*   $resize = new ResizeImage("../public/subidos/fotosusers/$uploadFileName");
         $resize->resizeTo(200, 200);
         $resize->saveImage("../public/subidos/fotosusers/$uploadFileName"); */
