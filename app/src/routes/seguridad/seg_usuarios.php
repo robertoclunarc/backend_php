@@ -248,7 +248,7 @@ $app->post('/api/login', function (Request $request, Response $response) {
     $usuario = $request->getParam('usuario');
     $contrasenia = $request->getParam('contrasenia');
 
-    
+
 
     $consulta = "SELECT u.*,
                     (SELECT cargos.idConfigGerencia FROM config_cargos cargos WHERE cargos.idConfigCargo = u.idConfigCargo) idGerencia
@@ -398,18 +398,18 @@ $app->post('/api/subirimgpropia/{archAnterior}', function (Request $request, Res
     if ($newfile->getError() === UPLOAD_ERR_OK) {
         $uploadFileName = $newfile->getClientFilename();
         //echo $newfile->getClientMediaType();
-     /*    if ($archivoAnterior != "-1") {
+        if ($archivoAnterior != "-1") {
             if (file_exists("../public/subidos/fotosusers/$archivoAnterior")) {
                 unlink("../public/subidos/fotosusers/$archivoAnterior");
             }
-        } */
+        }
         $newfile->moveTo("../public/subidos/fotosusers/$uploadFileName");
 
         //Cambiar el tamaño de la imagen una vez guardada en la carpeta
         //es posible que aqui sea elproblema 
-      /*   $resize = new ResizeImage("../public/subidos/fotosusers/$uploadFileName");
+         $resize = new ResizeImage("../public/subidos/fotosusers/$uploadFileName");
         $resize->resizeTo(200, 200);
-        $resize->saveImage("../public/subidos/fotosusers/$uploadFileName"); */
+        $resize->saveImage("../public/subidos/fotosusers/$uploadFileName"); 
     }
     //echo json_encode($newfile);
     echo '{"nombreArchivo": "' . $uploadFileName . '"}';

@@ -111,9 +111,9 @@ $app->post('/api/noticia', function (Request $request, Response $response) {
         $db = null;
 
         //return $response->withJson(['success' => $success]);
-        //return $response->withJson($newNoticia);
-        $rol = array('ObjectId' => $id_insertado);
-        echo json_encode($rol);
+        return $response->withJson($newNoticia);
+       /*  $rol = array('ObjectId' => $id_insertado);
+        echo json_encode($rol); */
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }
