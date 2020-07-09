@@ -6,7 +6,7 @@
         private $db = ""; //'intranet';
         private $user = ""; //'root';
         /*  private $password = 'root';*/
-        private $password = ""; // = '4c3r04dm1n';
+        private $password = ""; // = '.4C3r04dm1n';
         private $port = '';
 
         function __construct() {
