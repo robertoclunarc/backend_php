@@ -92,6 +92,37 @@ $app->get('/api/usuarioroles/{idSegUsuario}', function (Request $request, Respon
     }
 });
 
+$app->get('/api/usuarios-por-roles/{codigoRol}', function (Request $request, Response $response) {
+
+    $codigoRol = $request->getAttribute('codigoRol');
+
+        $consulta = "SELECT per.usuario AS nombreUsuario,
+	                    per.idSegUsuario,
+	                    rol.nombre AS nombreRol,
+	                    rol.codigo AS codigoRol,
+	                    rol.idSegRol
+                FROM seg_usuarios per
+                JOIN seg_roles_usuarios perRol ON per.idSegUsuario = perRol.idSegUsuario
+                JOIN seg_roles rol ON rol.idSegRol = perRol.idSegRol
+                WHERE rol.codigo = '$codigoRol'";
+
+    try {
+
+        $db = new db();
+
+        $db = $db->conectar();
+        $ejecutar = $db->query($consulta);
+        $usuarios = $ejecutar->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+
+        echo json_encode($usuarios);
+
+    } catch (PDOException $error) {
+        echo '{"error": {"text":' . $error->getMessage() . '}}';
+    }
+});
+
+
 $app->get('/api/nousuarioroles/{idSegUsuario}', function (Request $request, Response $response) {
 
     $idusuario = $request->getAttribute('idSegUsuario');
