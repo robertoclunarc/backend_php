@@ -28,7 +28,7 @@ $app->get('/api/productos', function (Request $request, Response $response) {
                             WHERE p.activo = 1
                                     
                             ORDER BY  
-                                p.idAdmProducto";
+                                p.fechaModificacion DESC, p.idAdmProducto";
 
     try {
 
