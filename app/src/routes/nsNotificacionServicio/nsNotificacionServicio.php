@@ -209,7 +209,11 @@ $app->post('/api/notificaciones/enviar', function(Request $request, Response $re
     $rol            = $request->getParam('rol');
 
 
-    $consulta = "CALL enviarNotificacion(:accion, :msj, :uEnv, :uRecib, :serv, :rol);";
+   // $consulta = "CALL enviarNotificacion(:accion, :msj, :uEnv, :uRecib, :serv, :rol);";
+
+   $consulta = "INSERT INTO ns_notificacion_servicios
+                (mensaje, idUsuarioEnvio, idUsuarioRecibe, idServiciosGerencias, idSegRol)
+                values (:msj, :uEnv, :uRecib, :serv, :rol)";
     
     try
     {
@@ -218,7 +222,7 @@ $app->post('/api/notificaciones/enviar', function(Request $request, Response $re
 
         $stmt = $db->prepare($consulta);
 
-        $stmt->bindParam(':accion', $accion);
+        //$stmt->bindParam(':accion', $accion);
         $stmt->bindParam(':msj', $mensaje);
         $stmt->bindParam(':uEnv', $usuarioEnvio);
         $stmt->bindParam(':uRecib', $usuarioRecibe);
@@ -226,11 +230,22 @@ $app->post('/api/notificaciones/enviar', function(Request $request, Response $re
         $stmt->bindParam(':rol', $rol);
 
         $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+        //$result = $stmt->fetchAll(PDO::FETCH_OBJ);
+        
+        
+        
+        $id_insertado = $db->lastInsertId();
+        //Ultimo row insertado
+        $ejecutar = $db->query("SELECT * from ns_notificacion_servicios WHERE idNotificacionServicio = " . $db->lastInsertId());
+        $newNoticia = $ejecutar->fetchAll(PDO::FETCH_OBJ); 
+        //****** */
+        
         $db = null; 
 
-        $notificacion = array('Data' => $result);
-        echo json_encode($notificacion); 
+        return $response->withJson($newNoticia);
+
+       /*  $notificacion = array('Data' => $result);
+        echo json_encode($notificacion);  */
 
     }
     catch(PDOException $error){
