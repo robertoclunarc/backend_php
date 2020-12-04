@@ -213,7 +213,7 @@ $app->post('/api/notificaciones/enviar', function(Request $request, Response $re
 
    $consulta = "INSERT INTO ns_notificacion_servicios
                 (mensaje, idUsuarioEnvio, idUsuarioRecibe, idServiciosGerencias, idSegRol)
-                values (:msj, :uEnv, :uRecib, :serv, :rol)";
+                values (:msj, :uEnv, :uRecib, :serv, :rol)"; 
     
     try
     {
