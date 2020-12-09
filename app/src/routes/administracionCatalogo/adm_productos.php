@@ -6,7 +6,7 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 
 $app->get('/api/productos', function (Request $request, Response $response) {
 
-    $consulta = "SELECT 
+	$consulta = "SELECT 
                             g.idAdmGrupoProducto,
                             um.idAdmTipoMedida,
                             g.nombre as grupo, 
@@ -30,48 +30,48 @@ $app->get('/api/productos', function (Request $request, Response $response) {
                             ORDER BY  
                                 p.fechaModificacion DESC, p.idAdmProducto";
 
-    try {
+	try {
 
-        $db = new db();
+		$db = new db();
 
-        $db = $db->conectar();
-        $ejecutar = $db->query($consulta);
-        $result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
+		$db = $db->conectar();
+		$ejecutar = $db->query($consulta);
+		$result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
+		$db = null;
 
-        $response->withJson($result);
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		$response->withJson($result);
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
 
 $app->post('/api/productos/busqueda', function (Request $request, Response $response) {
 
-    $campos = json_decode($request->getParam('campos'));
-    $frase = $request->getParam('frase');
+	$campos = json_decode($request->getParam('campos'));
+	$frase = $request->getParam('frase');
 
-    $where = "";
-    $condicion = "";
-    $i = 0;
+	$where = "";
+	$condicion = "";
+	$i = 0;
 
-    foreach ($campos as $clave => $valor) {
+	foreach ($campos as $clave => $valor) {
 
-        /*if(strtoupper($valor)=='CODIGO'){
+		/*if(strtoupper($valor)=='CODIGO'){
             $condicion = "ps.serial" . " like '%" . $frase . "%'";
         }
         else{*/
-        $condicion = "p." . $valor . " like '%" . $frase . "%'";
-        //} 
+		$condicion = "p." . $valor . " like '%" . $frase . "%'";
+		//} 
 
-        if ($i == 0)
-            $where =  $condicion;
-        else
-            $where =  $where . " OR " . $condicion;
+		if ($i == 0)
+			$where =  $condicion;
+		else
+			$where =  $where . " OR " . $condicion;
 
-        $i = $i + 1;
-    }
+		$i = $i + 1;
+	}
 
-    $consulta = "SELECT 
+	$consulta = "SELECT 
     IF(ps.serial IS NULL,codigo, ps.serial) AS codigo,
         g.idAdmGrupoProducto,
         um.idAdmTipoMedida,
@@ -94,48 +94,48 @@ $app->post('/api/productos/busqueda', function (Request $request, Response $resp
             adm_unidad_medidas um ON p.idAdmUnidadMedida = um.idAdmUnidadMedida
     WHERE " . $where . ' and p.activo=1';
 
-    try {
+	try {
 
-        $db = new db();
-        $db = $db->conectar();
+		$db = new db();
+		$db = $db->conectar();
 
-        $ejecutar = $db->query($consulta);
-        $result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
+		$ejecutar = $db->query($consulta);
+		$result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
+		$db = null;
 
-        $response->withJson($result);
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		$response->withJson($result);
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
 
 
 $app->post('/api/productos/busqueda/json', function (Request $request, Response $response) {
 
-    $campos = $request->getParam('campos');
-    $frase = $request->getParam('frase');
+	$campos = $request->getParam('campos');
+	$frase = $request->getParam('frase');
 
-    $where = "";
-    $condicion = "";
-    $i = 0;
+	$where = "";
+	$condicion = "";
+	$i = 0;
 
-    foreach ($campos as $clave => $valor) {
+	foreach ($campos as $clave => $valor) {
 
-        if (strtoupper($valor) == 'CODIGO') {
-            $condicion = "ps.serial" . " like '%" . $frase . "%'";
-        } else {
-            $condicion = "p." . $valor . " like '%" . $frase . "%'";
-        }
+		if (strtoupper($valor) == 'CODIGO') {
+			$condicion = "ps.serial" . " like '%" . $frase . "%'";
+		} else {
+			$condicion = "p." . $valor . " like '%" . $frase . "%'";
+		}
 
-        if ($i == 0)
-            $where =  $condicion;
-        else
-            $where =  $where . " OR " . $condicion;
+		if ($i == 0)
+			$where =  $condicion;
+		else
+			$where =  $where . " OR " . $condicion;
 
-        $i = $i + 1;
-    }
+		$i = $i + 1;
+	}
 
-    $consulta = "SELECT 
+	$consulta = "SELECT 
     IF(ps.serial IS NULL,'Sin código', ps.serial) AS codigo,
         g.idAdmGrupoProducto,
         um.idAdmTipoMedida,
@@ -158,26 +158,26 @@ $app->post('/api/productos/busqueda/json', function (Request $request, Response 
             adm_unidad_medidas um ON p.idAdmUnidadMedida = um.idAdmUnidadMedida
     WHERE " . $where . ' and p.activo=1';
 
-    try {
+	try {
 
-        $db = new db();
-        $db = $db->conectar();
+		$db = new db();
+		$db = $db->conectar();
 
-        $ejecutar = $db->query($consulta);
-        $result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
+		$ejecutar = $db->query($consulta);
+		$result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
+		$db = null;
 
-        $response->withJson($result);
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		$response->withJson($result);
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
 
 $app->get('/api/productos/{id}', function (Request $request, Response $response) {
 
-    $idAdmProducto = $request->getAttribute('id');
+	$idAdmProducto = $request->getAttribute('id');
 
-    $consulta = "SELECT 
+	$consulta = "SELECT 
                         g.idAdmGrupoProducto,
                         um.idAdmTipoMedida,
                         g.nombre as grupo, 
@@ -186,7 +186,9 @@ $app->get('/api/productos/{id}', function (Request $request, Response $response)
                             (select concat(primerNombre, ' ', primerApellido) from seg_usuarios u where u.idSegUsuario=p.idUsuarioCreacion)  as usuarioCreacion, 
                             (select concat(primerNombre, ' ', primerApellido) from seg_usuarios u where u.idSegUsuario=p.idUsuarioModificacion)  as usuarioModificacion,
                             (select concat(primerNombre, ' ', primerApellido) from seg_usuarios u where u.idSegUsuario=p.idUsuarioValidacion)  as usuarioAprobacion,
-                            (select concat(primerNombre, ' ', primerApellido) from seg_usuarios u where u.idSegUsuario=p.idUsuarioValInfo)  as usuarioValidacion
+                            (select concat(primerNombre, ' ', primerApellido) from seg_usuarios u where u.idSegUsuario=p.idUsuarioValInfo)  as usuarioValidacion,
+							(select concat(primerNombre, ' ', primerApellido) from seg_usuarios u where u.idSegUsuario=p.idUsuarioAprobAlmacen) as nombreUsrAproboAlmacen,
+							(select concat(primerNombre, ' ', primerApellido) from seg_usuarios u where u.idSegUsuario=p.idUsuarioModAlmacen) as nombreUsrModAlmacen
                         
                         FROM 
                             adm_productos p 
@@ -199,29 +201,29 @@ $app->get('/api/productos/{id}', function (Request $request, Response $response)
                         WHERE p.idAdmProducto = $idAdmProducto        
                         ORDER BY  
                             p.idAdmProducto";
-    try {
+	try {
 
-        $db = new db();
-        $db = $db->conectar();
+		$db = new db();
+		$db = $db->conectar();
 
-        $ejecutar = $db->query($consulta);
-        $result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
+		$ejecutar = $db->query($consulta);
+		$result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
+		$db = null;
 
-        $response->withJson($result);
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		$response->withJson($result);
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
 
 $app->get('/api/productossolped/{idConfigGerencia}/{idActivo}/{campo}/{valor}', function (Request $request, Response $response) {
 
-    $idConfigGerencia = $request->getAttribute('idConfigGerencia');
-    $idActivo = $request->getAttribute('idActivo');
-    $campo = $request->getAttribute('campo');
-    $valor = $request->getAttribute('valor');
+	$idConfigGerencia = $request->getAttribute('idConfigGerencia');
+	$idActivo = $request->getAttribute('idActivo');
+	$campo = $request->getAttribute('campo');
+	$valor = $request->getAttribute('valor');
 
-    $consulta = "SELECT apli.idConfigGerencia,
+	$consulta = "SELECT apli.idConfigGerencia,
 	                    apli.idAreaTrabajoGerencia,
 	                    p.codigo,
 	                    p.nombre,
@@ -238,32 +240,32 @@ $app->get('/api/productossolped/{idConfigGerencia}/{idActivo}/{campo}/{valor}', 
 				        AND idAdmActivo = $idActivo) negocios ON negocios.idGenAreaNegocio = area2.idGenAreaNegocio)
                 areas ON areas.idAreaTrabajo = apli.idAreaTrabajoGerencia
                 WHERE apli.idConfigGerencia = $idConfigGerencia";
-    $group = " GROUP BY p.codigo";
+	$group = " GROUP BY p.codigo";
 
-    $sentencia = $consulta . " AND p." . $campo . " LIKE '%" . $valor . "%'".$group ;
-    //$sentencia = $consulta.$group;
+	$sentencia = $consulta . " AND p." . $campo . " LIKE '%" . $valor . "%'" . $group;
+	//$sentencia = $consulta.$group;
 
-    try {
+	try {
 
-        $db = new db();
-        $db = $db->conectar();
+		$db = new db();
+		$db = $db->conectar();
 
-        $ejecutar = $db->query($sentencia);
-        $result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
+		$ejecutar = $db->query($sentencia);
+		$result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
+		$db = null;
 
-        $response->withJson($result);
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		$response->withJson($result);
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
 
 $app->post('/api/productos/{id}/complementarias', function (Request $request, Response $response) {
 
-    $idAdmProducto = $request->getAttribute('id');
-    $aplicaComplementaria = $request->getParam('aplicaComplementaria');
+	$idAdmProducto = $request->getAttribute('id');
+	$aplicaComplementaria = $request->getParam('aplicaComplementaria');
 
-    $consulta = "SELECT 
+	$consulta = "SELECT 
                         c.*,
                         u.idAdmTipoMedida,
                         p.nombre as 'propiedad',
@@ -305,59 +307,59 @@ $app->post('/api/productos/{id}/complementarias', function (Request $request, Re
                     ORDER BY 
                         c.idAdmComplementariaProducto ";
 
-    try {
+	try {
 
-        $db = new db();
-        $db = $db->conectar();
+		$db = new db();
+		$db = $db->conectar();
 
-        $ejecutar = $db->query($consulta);
-        $result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
+		$ejecutar = $db->query($consulta);
+		$result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
+		$db = null;
 
-        $response->withJson($result);
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		$response->withJson($result);
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
 
 $app->post('/api/productos', function (Request $request, Response $response) {
 
-    $codigo = $request->getParam("codigo");
-    $nombre = $request->getParam("nombre");
-    $uso = $request->getParam("uso");
-    $idAdmGrupoProducto = $request->getParam("idAdmGrupoProducto");
-    $idAdmSubGrupoProducto = $request->getParam("idAdmSubGrupoProducto");
-    $idAdmUnidadMedida = $request->getParam("idAdmUnidadMedida");
-    $idAdmMaterialProducto = $request->getParam("idAdmMaterialProducto");
-    $idAdmColorProducto = $request->getParam("idAdmColorProducto");
-    $poseeAccesorios = $request->getParam("poseeAccesorios");
-    $responsableFuncionalidad = $request->getParam("responsableFuncionalidad");
-    $responsableValidacion = $request->getParam("responsableValidacion");
-    $existenciaMaxima = $request->getParam("existenciaMaxima");
-    $existenciaMinima = $request->getParam("existenciaMinima");
-    $puntoPedido = $request->getParam("puntoPedido");
-    $caducidad = $request->getParam("caducidad");
-    $reciclable = $request->getParam("reciclable");
-    $activo = $request->getParam("activo");
-    $idAdmTipoDesagregacionProducto = $request->getParam("idAdmTipoDesagregacionProducto");
-    $peligroso = $request->getParam("peligroso");
-    $idUsuarioCreacion = $request->getParam("idUsuarioCreacion");
-    $idUsuarioValidacion = $request->getParam("idUsuarioValidacion");
-    $idUsuarioModificacion = $request->getParam("idUsuarioModificacion");
-    $fechaAprobacion = $request->getParam("fechaAprobacion");
-    $fechaModificacion = $request->getParam("fechaModificacion");
-    $aprobado = $request->getParam("aprobado");
-    $esservicio = $request->getParam("esservicio");
-    $validado = $request->getParam("validado");
-    $idUsuarioValInfo = $request->getParam("idUsuarioValInfo");
-    $fechaValInfo = $request->getParam("fechaValInfo");
+	$codigo = $request->getParam("codigo");
+	$nombre = $request->getParam("nombre");
+	$uso = $request->getParam("uso");
+	$idAdmGrupoProducto = $request->getParam("idAdmGrupoProducto");
+	$idAdmSubGrupoProducto = $request->getParam("idAdmSubGrupoProducto");
+	$idAdmUnidadMedida = $request->getParam("idAdmUnidadMedida");
+	$idAdmMaterialProducto = $request->getParam("idAdmMaterialProducto");
+	$idAdmColorProducto = $request->getParam("idAdmColorProducto");
+	$poseeAccesorios = $request->getParam("poseeAccesorios");
+	$responsableFuncionalidad = $request->getParam("responsableFuncionalidad");
+	$responsableValidacion = $request->getParam("responsableValidacion");
+	$existenciaMaxima = $request->getParam("existenciaMaxima");
+	$existenciaMinima = $request->getParam("existenciaMinima");
+	$puntoPedido = $request->getParam("puntoPedido");
+	$caducidad = $request->getParam("caducidad");
+	$reciclable = $request->getParam("reciclable");
+	$activo = $request->getParam("activo");
+	$idAdmTipoDesagregacionProducto = $request->getParam("idAdmTipoDesagregacionProducto");
+	$peligroso = $request->getParam("peligroso");
+	$idUsuarioCreacion = $request->getParam("idUsuarioCreacion");
+	$idUsuarioValidacion = $request->getParam("idUsuarioValidacion");
+	$idUsuarioModificacion = $request->getParam("idUsuarioModificacion");
+	$fechaAprobacion = $request->getParam("fechaAprobacion");
+	$fechaModificacion = $request->getParam("fechaModificacion");
+	$aprobado = $request->getParam("aprobado");
+	$esservicio = $request->getParam("esservicio");
+	$validado = $request->getParam("validado");
+	$idUsuarioValInfo = $request->getParam("idUsuarioValInfo");
+	$fechaValInfo = $request->getParam("fechaValInfo");
 
-    $idGerenciaCreacion = $request->getParam("idGerenciaCreacion");
-    $idGerenciaModificacion = $request->getParam("idGerenciaModificacion");
-    $idGerenciaAprobacion = $request->getParam("idGerenciaAprobacion");
-    $idGerenciaValidacion = $request->getParam("idGerenciaValidacion");
+	$idGerenciaCreacion = $request->getParam("idGerenciaCreacion");
+	$idGerenciaModificacion = $request->getParam("idGerenciaModificacion");
+	$idGerenciaAprobacion = $request->getParam("idGerenciaAprobacion");
+	$idGerenciaValidacion = $request->getParam("idGerenciaValidacion");
 
-    $consulta = "INSERT INTO adm_productos
+	$consulta = "INSERT INTO adm_productos
                     (
                         codigo,
                         nombre,
@@ -430,102 +432,102 @@ $app->post('/api/productos', function (Request $request, Response $response) {
 	                    :idGerenciaValidacion
                     )";
 
-    try {
+	try {
 
-        $db = new db();
-        $db = $db->conectar();
+		$db = new db();
+		$db = $db->conectar();
 
-        $sentencia = $db->prepare($consulta);
-        $sentencia->bindParam(":codigo", $codigo);
-        $sentencia->bindParam(":nombre", $nombre);
-        $sentencia->bindParam(":uso", $uso);
-        $sentencia->bindParam(":idAdmGrupoProducto", $idAdmGrupoProducto);
-        $sentencia->bindParam(":idAdmSubGrupoProducto", $idAdmSubGrupoProducto);
-        $sentencia->bindParam(":idAdmUnidadMedida", $idAdmUnidadMedida);
-        $sentencia->bindParam(":idAdmMaterialProducto", $idAdmMaterialProducto);
-        $sentencia->bindParam(":idAdmColorProducto", $idAdmColorProducto);
-        $sentencia->bindParam(":poseeAccesorios", $poseeAccesorios);
-        $sentencia->bindParam(":responsableFuncionalidad", $responsableFuncionalidad);
-        $sentencia->bindParam(":responsableValidacion", $responsableValidacion);
-        $sentencia->bindParam(":existenciaMaxima", $existenciaMaxima);
-        $sentencia->bindParam(":existenciaMinima", $existenciaMinima);
-        $sentencia->bindParam(":puntoPedido", $puntoPedido);
-        $sentencia->bindParam(":caducidad", $caducidad);
-        $sentencia->bindParam(":reciclable", $reciclable);
-        $sentencia->bindParam(":activo", $activo);
-        $sentencia->bindParam(":idAdmTipoDesagregacionProducto", $idAdmTipoDesagregacionProducto);
-        $sentencia->bindParam(":peligroso",  $peligroso);
-        $sentencia->bindParam(":idUsuarioCreacion", $idUsuarioCreacion);
-        $sentencia->bindParam(":idUsuarioValidacion", $idUsuarioValidacion);
-        $sentencia->bindParam(":idUsuarioModificacion", $idUsuarioModificacion);
-        $sentencia->bindParam(":fechaAprobacion", $fechaAprobacion);
-        $sentencia->bindParam(":fechaModificacion", $fechaModificacion);
-        $sentencia->bindParam(":aprobado", $aprobado);
-        $sentencia->bindParam(":esservicio", $esservicio);
-        $sentencia->bindParam(":validado", $validado);
-        $sentencia->bindParam(":idUsuarioValInfo", $idUsuarioValInfo);
-        $sentencia->bindParam(":fechaValInfo", $fechaValInfo);
-        $sentencia->bindParam(":idGerenciaCreacion", $idGerenciaCreacion);
-        $sentencia->bindParam(":idGerenciaModificacion", $idGerenciaModificacion);
-        $sentencia->bindParam(":idGerenciaAprobacion", $idGerenciaAprobacion);
-        $sentencia->bindParam(":idGerenciaValidacion", $idGerenciaValidacion);
+		$sentencia = $db->prepare($consulta);
+		$sentencia->bindParam(":codigo", $codigo);
+		$sentencia->bindParam(":nombre", $nombre);
+		$sentencia->bindParam(":uso", $uso);
+		$sentencia->bindParam(":idAdmGrupoProducto", $idAdmGrupoProducto);
+		$sentencia->bindParam(":idAdmSubGrupoProducto", $idAdmSubGrupoProducto);
+		$sentencia->bindParam(":idAdmUnidadMedida", $idAdmUnidadMedida);
+		$sentencia->bindParam(":idAdmMaterialProducto", $idAdmMaterialProducto);
+		$sentencia->bindParam(":idAdmColorProducto", $idAdmColorProducto);
+		$sentencia->bindParam(":poseeAccesorios", $poseeAccesorios);
+		$sentencia->bindParam(":responsableFuncionalidad", $responsableFuncionalidad);
+		$sentencia->bindParam(":responsableValidacion", $responsableValidacion);
+		$sentencia->bindParam(":existenciaMaxima", $existenciaMaxima);
+		$sentencia->bindParam(":existenciaMinima", $existenciaMinima);
+		$sentencia->bindParam(":puntoPedido", $puntoPedido);
+		$sentencia->bindParam(":caducidad", $caducidad);
+		$sentencia->bindParam(":reciclable", $reciclable);
+		$sentencia->bindParam(":activo", $activo);
+		$sentencia->bindParam(":idAdmTipoDesagregacionProducto", $idAdmTipoDesagregacionProducto);
+		$sentencia->bindParam(":peligroso",  $peligroso);
+		$sentencia->bindParam(":idUsuarioCreacion", $idUsuarioCreacion);
+		$sentencia->bindParam(":idUsuarioValidacion", $idUsuarioValidacion);
+		$sentencia->bindParam(":idUsuarioModificacion", $idUsuarioModificacion);
+		$sentencia->bindParam(":fechaAprobacion", $fechaAprobacion);
+		$sentencia->bindParam(":fechaModificacion", $fechaModificacion);
+		$sentencia->bindParam(":aprobado", $aprobado);
+		$sentencia->bindParam(":esservicio", $esservicio);
+		$sentencia->bindParam(":validado", $validado);
+		$sentencia->bindParam(":idUsuarioValInfo", $idUsuarioValInfo);
+		$sentencia->bindParam(":fechaValInfo", $fechaValInfo);
+		$sentencia->bindParam(":idGerenciaCreacion", $idGerenciaCreacion);
+		$sentencia->bindParam(":idGerenciaModificacion", $idGerenciaModificacion);
+		$sentencia->bindParam(":idGerenciaAprobacion", $idGerenciaAprobacion);
+		$sentencia->bindParam(":idGerenciaValidacion", $idGerenciaValidacion);
 
 
 
-        $sentencia->execute();
+		$sentencia->execute();
 
-        $id_insertado = $db->lastInsertId();
-        $db = null;
+		$id_insertado = $db->lastInsertId();
+		$db = null;
 
-        $producto = array('ObjectId' => $id_insertado);
-        $response->withJson($producto);
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		$producto = array('ObjectId' => $id_insertado);
+		$response->withJson($producto);
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
 
 $app->put('/api/productos/{id}', function (Request $request, Response $response) {
 
-    $idAdmProducto = $request->getAttribute('id');
+	$idAdmProducto = $request->getAttribute('id');
 
 
-    $codigo = $request->getParam("codigo");
-    $nombre = $request->getParam("nombre");
-    $uso = $request->getParam("uso");
-    $idAdmGrupoProducto = $request->getParam("idAdmGrupoProducto");
-    $idAdmSubGrupoProducto = $request->getParam("idAdmSubGrupoProducto");
-    $idAdmUnidadMedida = $request->getParam("idAdmUnidadMedida");
-    $idAdmMaterialProducto = $request->getParam("idAdmMaterialProducto");
-    $idAdmColorProducto = $request->getParam("idAdmColorProducto");
-    $poseeAccesorios = $request->getParam("poseeAccesorios");
-    $responsableFuncionalidad = $request->getParam("responsableFuncionalidad");
-    $responsableValidacion = $request->getParam("responsableValidacion");
-    $existenciaMaxima = $request->getParam("existenciaMaxima");
-    $existenciaMinima = $request->getParam("existenciaMinima");
-    $puntoPedido = $request->getParam("puntoPedido");
-    $caducidad = $request->getParam("caducidad");
-    $reciclable = $request->getParam("reciclable");
-    $activo = $request->getParam("activo");
-    $idAdmTipoDesagregacionProducto = $request->getParam("idAdmTipoDesagregacionProducto");
-    $peligroso = $request->getParam("peligroso");
-    $idUsuarioCreacion = $request->getParam("idUsuarioCreacion");
-    $idUsuarioValidacion = $request->getParam("idUsuarioValidacion");
-    $idUsuarioModificacion = $request->getParam("idUsuarioModificacion");
-    $fechaAprobacion = $request->getParam("fechaAprobacion");
-    $fechaModificacion = $request->getParam("fechaModificacion");
-    $aprobado = $request->getParam("aprobado");
-    $esservicio = $request->getParam("esservicio");
-    $validado = $request->getParam("validado");
-    $idUsuarioValInfo = $request->getParam("idUsuarioValInfo");
-    $fechaValInfo = $request->getParam("fechaValInfo");
+	$codigo = $request->getParam("codigo");
+	$nombre = $request->getParam("nombre");
+	$uso = $request->getParam("uso");
+	$idAdmGrupoProducto = $request->getParam("idAdmGrupoProducto");
+	$idAdmSubGrupoProducto = $request->getParam("idAdmSubGrupoProducto");
+	$idAdmUnidadMedida = $request->getParam("idAdmUnidadMedida");
+	$idAdmMaterialProducto = $request->getParam("idAdmMaterialProducto");
+	$idAdmColorProducto = $request->getParam("idAdmColorProducto");
+	$poseeAccesorios = $request->getParam("poseeAccesorios");
+	$responsableFuncionalidad = $request->getParam("responsableFuncionalidad");
+	$responsableValidacion = $request->getParam("responsableValidacion");
+	$existenciaMaxima = $request->getParam("existenciaMaxima");
+	$existenciaMinima = $request->getParam("existenciaMinima");
+	$puntoPedido = $request->getParam("puntoPedido");
+	$caducidad = $request->getParam("caducidad");
+	$reciclable = $request->getParam("reciclable");
+	$activo = $request->getParam("activo");
+	$idAdmTipoDesagregacionProducto = $request->getParam("idAdmTipoDesagregacionProducto");
+	$peligroso = $request->getParam("peligroso");
+	$idUsuarioCreacion = $request->getParam("idUsuarioCreacion");
+	$idUsuarioValidacion = $request->getParam("idUsuarioValidacion");
+	$idUsuarioModificacion = $request->getParam("idUsuarioModificacion");
+	$fechaAprobacion = $request->getParam("fechaAprobacion");
+	$fechaModificacion = $request->getParam("fechaModificacion");
+	$aprobado = $request->getParam("aprobado");
+	$esservicio = $request->getParam("esservicio");
+	$validado = $request->getParam("validado");
+	$idUsuarioValInfo = $request->getParam("idUsuarioValInfo");
+	$fechaValInfo = $request->getParam("fechaValInfo");
 
-    $idGerenciaCreacion = $request->getParam("idGerenciaCreacion");
-    $idGerenciaModificacion = $request->getParam("idGerenciaModificacion");
-    $idGerenciaAprobacion = $request->getParam("idGerenciaAprobacion");
-    $idGerenciaValidacion = $request->getParam("idGerenciaValidacion");
+	$idGerenciaCreacion = $request->getParam("idGerenciaCreacion");
+	$idGerenciaModificacion = $request->getParam("idGerenciaModificacion");
+	$idGerenciaAprobacion = $request->getParam("idGerenciaAprobacion");
+	$idGerenciaValidacion = $request->getParam("idGerenciaValidacion");
 
 
-    $consulta = "UPDATE adm_productos 
+	$consulta = "UPDATE adm_productos 
                     SET
                         codigo = :codigo,
                         nombre = :nombre,
@@ -564,150 +566,244 @@ $app->put('/api/productos/{id}', function (Request $request, Response $response)
                  WHERE 
                     idAdmProducto = :idAdmProducto"; //left join adm_producto
 
-    try {
+	try {
 
-        $db = new db();
-        $db = $db->conectar();
+		$db = new db();
+		$db = $db->conectar();
 
-        $sentencia = $db->prepare($consulta);
+		$sentencia = $db->prepare($consulta);
 
-        $sentencia->bindParam(":codigo", $codigo);
-        $sentencia->bindParam(":nombre", $nombre);
-        $sentencia->bindParam(":uso", $uso);
-        $sentencia->bindParam(":idAdmGrupoProducto", $idAdmGrupoProducto);
-        $sentencia->bindParam(":idAdmSubGrupoProducto", $idAdmSubGrupoProducto);
-        $sentencia->bindParam(":idAdmUnidadMedida", $idAdmUnidadMedida);
-        $sentencia->bindParam(":idAdmMaterialProducto", $idAdmMaterialProducto);
-        $sentencia->bindParam(":idAdmColorProducto", $idAdmColorProducto);
-        $sentencia->bindParam(":poseeAccesorios", $poseeAccesorios);
-        $sentencia->bindParam(":responsableFuncionalidad", $responsableFuncionalidad);
-        $sentencia->bindParam(":responsableValidacion", $responsableValidacion);
-        $sentencia->bindParam(":existenciaMaxima", $existenciaMaxima);
-        $sentencia->bindParam(":existenciaMinima", $existenciaMinima);
-        $sentencia->bindParam(":puntoPedido", $puntoPedido);
-        $sentencia->bindParam(":caducidad", $caducidad);
-        $sentencia->bindParam(":reciclable", $reciclable);
-        $sentencia->bindParam(":activo", $activo);
-        $sentencia->bindParam(":idAdmTipoDesagregacionProducto", $idAdmTipoDesagregacionProducto);
-        $sentencia->bindParam(":peligroso",  $peligroso);
-        $sentencia->bindParam(":idUsuarioCreacion", $idUsuarioCreacion);
-        $sentencia->bindParam(":idUsuarioValidacion", $idUsuarioValidacion);
-        $sentencia->bindParam(":idUsuarioModificacion", $idUsuarioModificacion);
-        $sentencia->bindParam(":fechaAprobacion", $fechaAprobacion);
-        $sentencia->bindParam(":fechaModificacion", $fechaModificacion);
-        $sentencia->bindParam(":aprobado", $aprobado);
-        $sentencia->bindParam(":esservicio", $esservicio);
-        $sentencia->bindParam(":validado", $validado);
-        $sentencia->bindParam(":idUsuarioValInfo", $idUsuarioValInfo);
-        $sentencia->bindParam(":fechaValInfo", $fechaValInfo);
+		$sentencia->bindParam(":codigo", $codigo);
+		$sentencia->bindParam(":nombre", $nombre);
+		$sentencia->bindParam(":uso", $uso);
+		$sentencia->bindParam(":idAdmGrupoProducto", $idAdmGrupoProducto);
+		$sentencia->bindParam(":idAdmSubGrupoProducto", $idAdmSubGrupoProducto);
+		$sentencia->bindParam(":idAdmUnidadMedida", $idAdmUnidadMedida);
+		$sentencia->bindParam(":idAdmMaterialProducto", $idAdmMaterialProducto);
+		$sentencia->bindParam(":idAdmColorProducto", $idAdmColorProducto);
+		$sentencia->bindParam(":poseeAccesorios", $poseeAccesorios);
+		$sentencia->bindParam(":responsableFuncionalidad", $responsableFuncionalidad);
+		$sentencia->bindParam(":responsableValidacion", $responsableValidacion);
+		$sentencia->bindParam(":existenciaMaxima", $existenciaMaxima);
+		$sentencia->bindParam(":existenciaMinima", $existenciaMinima);
+		$sentencia->bindParam(":puntoPedido", $puntoPedido);
+		$sentencia->bindParam(":caducidad", $caducidad);
+		$sentencia->bindParam(":reciclable", $reciclable);
+		$sentencia->bindParam(":activo", $activo);
+		$sentencia->bindParam(":idAdmTipoDesagregacionProducto", $idAdmTipoDesagregacionProducto);
+		$sentencia->bindParam(":peligroso",  $peligroso);
+		$sentencia->bindParam(":idUsuarioCreacion", $idUsuarioCreacion);
+		$sentencia->bindParam(":idUsuarioValidacion", $idUsuarioValidacion);
+		$sentencia->bindParam(":idUsuarioModificacion", $idUsuarioModificacion);
+		$sentencia->bindParam(":fechaAprobacion", $fechaAprobacion);
+		$sentencia->bindParam(":fechaModificacion", $fechaModificacion);
+		$sentencia->bindParam(":aprobado", $aprobado);
+		$sentencia->bindParam(":esservicio", $esservicio);
+		$sentencia->bindParam(":validado", $validado);
+		$sentencia->bindParam(":idUsuarioValInfo", $idUsuarioValInfo);
+		$sentencia->bindParam(":fechaValInfo", $fechaValInfo);
 
-        $sentencia->bindParam(":idGerenciaCreacion", $idGerenciaCreacion);
-        $sentencia->bindParam(":idGerenciaModificacion", $idGerenciaModificacion);
-        $sentencia->bindParam(":idGerenciaAprobacion", $idGerenciaAprobacion);
-        $sentencia->bindParam(":idGerenciaValidacion", $idGerenciaValidacion);
+		$sentencia->bindParam(":idGerenciaCreacion", $idGerenciaCreacion);
+		$sentencia->bindParam(":idGerenciaModificacion", $idGerenciaModificacion);
+		$sentencia->bindParam(":idGerenciaAprobacion", $idGerenciaAprobacion);
+		$sentencia->bindParam(":idGerenciaValidacion", $idGerenciaValidacion);
 
-        $sentencia->bindParam(":idAdmProducto", $idAdmProducto);
+		$sentencia->bindParam(":idAdmProducto", $idAdmProducto);
 
-        //echo $sentencia;
+		//echo $sentencia;
 
-        $sentencia->execute();
+		$sentencia->execute();
 
-        echo '{"message": {"text": "Producto actualizado correctamente"}}';
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		echo '{"message": {"text": "Producto actualizado correctamente"}}';
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
+});
+
+$app->put('/api/productos/soloalmacen/{id}', function (Request $request, Response $response) {
+
+	$idAdmProducto = $request->getAttribute('id');
+
+	$existenciaMaxima = $request->getParam("existenciaMaxima");
+	$existenciaMinima = $request->getParam("existenciaMinima");
+	$puntoPedido = $request->getParam("puntoPedido");
+	$caducidad = $request->getParam("caducidad");
+	$reciclable = $request->getParam("reciclable");
+	$peligroso = $request->getParam("peligroso");
+	
+
+	$idUsuarioModAlmacen = $request->getParam("idUsuarioModAlmacen");
+	$ultimaModAlmacen = $request->getParam("ultimaModAlmacen");
+
+
+	$consulta = "UPDATE adm_productos 
+                SET 
+                        existenciaMaxima = :existenciaMaxima,
+                        existenciaMinima = :existenciaMinima,
+                        puntoPedido = :puntoPedido,
+                        caducidad = :caducidad,
+                        reciclable = :reciclable,
+                        peligroso = :peligroso,
+						ultimaModAlmacen = :ultimaModAlmacen,
+						idUsuarioModAlmacen = :idUsuarioModAlmacen,
+
+						aprobadoAlmacen = 0
+
+				 WHERE   idAdmProducto = :idAdmProducto";
+
+	try {
+
+		$db = new db();
+		$db = $db->conectar();
+
+		$sentencia = $db->prepare($consulta);
+		$sentencia->bindParam(":existenciaMaxima", $existenciaMaxima);
+		$sentencia->bindParam(":existenciaMinima", $existenciaMinima);
+		$sentencia->bindParam(":puntoPedido", $puntoPedido);
+		$sentencia->bindParam(":caducidad", $caducidad);
+		$sentencia->bindParam(":reciclable", $reciclable);
+		$sentencia->bindParam(":peligroso",  $peligroso);
+
+		$sentencia->bindParam(":ultimaModAlmacen",  $ultimaModAlmacen);
+		$sentencia->bindParam(":idUsuarioModAlmacen",  $idUsuarioModAlmacen);
+
+		$sentencia->bindParam(":idAdmProducto", $idAdmProducto);
+
+		$sentencia->execute();
+
+		echo '{"message": {"text": "Producto actualizado correctamente"}}';
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
+});
+
+$app->put('/api/productos/aprobarAlmacen/{id}', function (Request $request, Response $response) {
+
+	$idAdmProducto = $request->getAttribute('id');
+
+	$aprobadoAlmacen = $request->getParam("aprobadoAlmacen");
+	$idUsuarioAprobAlmacen = $request->getParam("idUsuarioAprobAlmacen");
+	$fechaAproboAlmacen = $request->getParam("fechaAproboAlmacen");
+
+
+	$consulta = "UPDATE adm_productos 
+                SET 
+						aprobadoAlmacen = :aprobadoAlmacen,
+                        idUsuarioAprobAlmacen = :idUsuarioAprobAlmacen,
+                        fechaAproboAlmacen = :fechaAproboAlmacen
+
+				 WHERE   idAdmProducto = :idAdmProducto";
+
+	try {
+
+		$db = new db();
+		$db = $db->conectar();
+
+		$sentencia = $db->prepare($consulta);
+		$sentencia->bindParam(":aprobadoAlmacen", $aprobadoAlmacen);
+		$sentencia->bindParam(":idUsuarioAprobAlmacen", $idUsuarioAprobAlmacen);
+		$sentencia->bindParam(":fechaAproboAlmacen", $fechaAproboAlmacen);
+
+		$sentencia->bindParam(":idAdmProducto", $idAdmProducto);
+
+		$sentencia->execute();
+
+		echo '{"message": {"text": "Producto actualizado correctamente"}}';
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
 
 $app->delete('/api/productos/{id}', function (Request $request, Response $response) {
 
-    $idAdmProducto = $request->getAttribute('id');
+	$idAdmProducto = $request->getAttribute('id');
 
-    $consulta = "DELETE FROM adm_productos WHERE idAdmProducto = $idAdmProducto";
+	$consulta = "DELETE FROM adm_productos WHERE idAdmProducto = $idAdmProducto";
 
-    try {
+	try {
 
-        $db = new db();
-        $db = $db->conectar();
+		$db = new db();
+		$db = $db->conectar();
 
-        $sentencia = $db->prepare($consulta);
-        $sentencia->execute();
+		$sentencia = $db->prepare($consulta);
+		$sentencia->execute();
 
-        $db = null;
+		$db = null;
 
-        echo '{"message": {"text": "Producto eliminado correctamente"}}';
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		echo '{"message": {"text": "Producto eliminado correctamente"}}';
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
 
 $app->delete('/api/productos/{id}/complementarias', function (Request $request, Response $response) {
 
-    $idAdmProducto = $request->getAttribute('id');
+	$idAdmProducto = $request->getAttribute('id');
 
-    $consulta = "DELETE FROM 
+	$consulta = "DELETE FROM 
                     adm_complementarias_producto 
                  WHERE idAdmProducto = $idAdmProducto AND aplicaComplementaria = 1";
 
-    try {
+	try {
 
-        $db = new db();
-        $db = $db->conectar();
+		$db = new db();
+		$db = $db->conectar();
 
-        $sentencia = $db->prepare($consulta);
-        $sentencia->execute();
+		$sentencia = $db->prepare($consulta);
+		$sentencia->execute();
 
-        $db = null;
+		$db = null;
 
-        echo '{"message": {"text": "Producto eliminado correctamente"}}';
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		echo '{"message": {"text": "Producto eliminado correctamente"}}';
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
 
 $app->delete('/api/productos/{id}/adicionales', function (Request $request, Response $response) {
 
-    $idAdmProducto = $request->getAttribute('id');
+	$idAdmProducto = $request->getAttribute('id');
 
-    $consulta = "DELETE FROM 
+	$consulta = "DELETE FROM 
                     adm_complementarias_producto 
                  WHERE idAdmProducto = $idAdmProducto AND aplicaComplementaria = 0";
 
-    try {
+	try {
 
-        $db = new db();
-        $db = $db->conectar();
+		$db = new db();
+		$db = $db->conectar();
 
-        $sentencia = $db->prepare($consulta);
-        $sentencia->execute();
+		$sentencia = $db->prepare($consulta);
+		$sentencia->execute();
 
-        $db = null;
+		$db = null;
 
-        echo '{"message": {"text": "Producto eliminado correctamente"}}';
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		echo '{"message": {"text": "Producto eliminado correctamente"}}';
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
 
 $app->delete('/api/productos/{id}/aplicabilidad', function (Request $request, Response $response) {
 
-    $idAdmProductoPadre = $request->getAttribute('id');
+	$idAdmProductoPadre = $request->getAttribute('id');
 
-    $consulta = "DELETE FROM 
+	$consulta = "DELETE FROM 
                     adm_aplicabilidad_producto 
                  WHERE idAdmProductoPadre = $idAdmProductoPadre";
 
-    try {
+	try {
 
-        $db = new db();
-        $db = $db->conectar();
+		$db = new db();
+		$db = $db->conectar();
 
-        $sentencia = $db->prepare($consulta);
-        $sentencia->execute();
+		$sentencia = $db->prepare($consulta);
+		$sentencia->execute();
 
-        $db = null;
+		$db = null;
 
-        echo '{"message": {"text": "Producto eliminado correctamente"}}';
-    } catch (PDOException $error) {
-        echo '{"error": {"text":' . $error->getMessage() . '}}';
-    }
+		echo '{"message": {"text": "Producto eliminado correctamente"}}';
+	} catch (PDOException $error) {
+		echo '{"error": {"text":' . $error->getMessage() . '}}';
+	}
 });
