@@ -1,0 +1,1 @@
+scp -rp app/* soporte@10.10.0.16:/var/www/sisglobal/html/backend/
