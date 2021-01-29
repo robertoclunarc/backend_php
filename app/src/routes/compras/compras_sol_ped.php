@@ -77,6 +77,7 @@ $app->post('/api/solped', function (Request $request, Response $response) {
     $idSolpedPadre    = $request->getParam('idSolpedPadre');
     $idConfigGerencia    = $request->getParam('idConfigGerencia');
     $idAdmActivo    = $request->getParam('idAdmActivo');
+    $descripcion    = $request->getParam('descripcion');
 
     $consulta = "INSERT INTO compras_solped 
                     (   
@@ -86,7 +87,8 @@ $app->post('/api/solped', function (Request $request, Response $response) {
                         estadoActual  ,
                         idSolpedPadre ,
                         idConfigGerencia,
-                        idAdmActivo                 
+                        idAdmActivo,
+                        descripcion                 
                     ) 
                 VALUES 
                     (   
@@ -96,7 +98,8 @@ $app->post('/api/solped', function (Request $request, Response $response) {
                         :estadoActual,
                         :idSolpedPadre,
                         :idConfigGerencia,
-                        :idAdmActivo
+                        :idAdmActivo,
+                        :descripcion
                     ) ";
 
     try {
@@ -112,6 +115,7 @@ $app->post('/api/solped', function (Request $request, Response $response) {
         $stmt->bindParam(':idSolpedPadre', $idSolpedPadre);
         $stmt->bindParam(':idConfigGerencia', $idConfigGerencia);
         $stmt->bindParam(':idAdmActivo', $idAdmActivo);
+        $stmt->bindParam(':descripcion', $descripcion);
         $stmt->execute();
 
         $id = $db->lastInsertId();

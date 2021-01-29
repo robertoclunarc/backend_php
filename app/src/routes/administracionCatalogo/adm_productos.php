@@ -223,7 +223,7 @@ $app->get('/api/productossolped/{idConfigGerencia}/{idActivo}/{campo}/{valor}', 
 	$campo = $request->getAttribute('campo');
 	$valor = $request->getAttribute('valor');
 
-	$consulta = "SELECT apli.idConfigGerencia,
+/* 	$consulta = "SELECT apli.idConfigGerencia,
 	                    apli.idAreaTrabajoGerencia,
 	                    p.codigo,
 	                    p.nombre,
@@ -239,8 +239,14 @@ $app->get('/api/productossolped/{idConfigGerencia}/{idActivo}/{campo}/{valor}', 
 			            WHERE idConfigGerencia = $idConfigGerencia
 				        AND idAdmActivo = $idActivo) negocios ON negocios.idGenAreaNegocio = area2.idGenAreaNegocio)
                 areas ON areas.idAreaTrabajo = apli.idAreaTrabajoGerencia
-                WHERE apli.idConfigGerencia = $idConfigGerencia";
-	$group = " GROUP BY p.codigo";
+				WHERE apli.idConfigGerencia = $idConfigGerencia"; */
+				
+	$consulta = "SELECT p.codigo,
+	                    p.nombre,
+	                    p.uso
+                FROM adm_productos p               
+                WHERE 1 = 1 AND aprobado = 1 AND validado = 1";
+	$group = " GROUP BY p.codigo";    //cambiado miesntras
 
 	$sentencia = $consulta . " AND p." . $campo . " LIKE '%" . $valor . "%'" . $group;
 	//$sentencia = $consulta.$group;
