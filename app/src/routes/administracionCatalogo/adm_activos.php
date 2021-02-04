@@ -1,4 +1,5 @@
 <?php
+
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -17,7 +18,6 @@ $app->get('/api/activos', function (Request $request, Response $response) {
         $db = null;
 
         $response->withJson($result);
-        
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }
@@ -25,9 +25,9 @@ $app->get('/api/activos', function (Request $request, Response $response) {
 
 $app->get('/api/activos/gerencia/{idgerencia}', function (Request $request, Response $response) {
 
-    
+
     $idgerencia = $request->getAttribute("idgerencia");
-    $consulta = "SELECT 	tri.idConfigGerencia,
+    /*   $consulta = "SELECT 	tri.idConfigGerencia,
                     act.idAdmActivo, 
                     act.nombre, 
                     act.descripcion, 
@@ -39,9 +39,18 @@ $app->get('/api/activos/gerencia/{idgerencia}', function (Request $request, Resp
                     adm_activos act 
                 INNER JOIN compras_activo_gerencia_area_negocio tri
                     ON tri.idAdmActivo = act.idAdmActivo
-                WHERE tri.idConfigGerencia = $idgerencia GROUP BY act.idAdmActivo";
+                WHERE tri.idConfigGerencia = $idgerencia GROUP BY act.idAdmActivo"; */
 
-
+    $consulta = "SELECT
+                    act.idAdmActivo, 
+                    act.nombre, 
+                    act.descripcion, 
+                    act.fechaAlta, 
+                    act.fechaModificacion, 
+                    act.idAdmProducto,
+                    act.idComprasEmpresa 
+                FROM 
+                    adm_activos act GROUP BY act.idAdmActivo";
     try {
 
         $db = new db();
@@ -52,7 +61,6 @@ $app->get('/api/activos/gerencia/{idgerencia}', function (Request $request, Resp
         $db = null;
 
         $response->withJson($result);
-        
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }
@@ -74,7 +82,6 @@ $app->get('/api/activos/{id}', function (Request $request, Response $response) {
         $db = null;
 
         $response->withJson($result);
-
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }
@@ -124,7 +131,6 @@ $app->post('/api/activos', function (Request $request, Response $response) {
 
         $activo = array('ObjectId' => $id_insertado);
         $response->withJson($activo);
-
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }
@@ -168,7 +174,6 @@ $app->put('/api/activos/{id}', function (Request $request, Response $response) {
         $sentencia->execute();
 
         echo '{"message": {"text": "Activo actualizado correctamente"}}';
-
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }
@@ -191,7 +196,6 @@ $app->delete('/api/activos/{id}', function (Request $request, Response $response
         $db = null;
 
         echo '{"message": {"text": "Activo eliminado correctamente"}}';
-
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }

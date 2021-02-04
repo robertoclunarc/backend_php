@@ -123,11 +123,11 @@ $app->get('/api/getlog/{modulo}/{accion}/{rol}/{desde}/{hasta}', function (Reque
     }
 
     if (($desde != -1) && ($hasta != -1)){
-        $consulta .= " and fechaRegistro BETWEEN '$desde' and '$hasta'";
+        $consulta .= " and DATE_FORMAT(fechaRegistro, '%Y-%m-%d') BETWEEN '$desde' and '$hasta'";
     }
 
     
-   // print_r($consulta);
+    //print_r($consulta);
 
     try {
 
