@@ -42,13 +42,7 @@ $app->get('/api/activos/gerencia/{idgerencia}', function (Request $request, Resp
                 WHERE tri.idConfigGerencia = $idgerencia GROUP BY act.idAdmActivo"; */
 
     $consulta = "SELECT
-                    act.idAdmActivo, 
-                    act.nombre, 
-                    act.descripcion, 
-                    act.fechaAlta, 
-                    act.fechaModificacion, 
-                    act.idAdmProducto,
-                    act.idComprasEmpresa 
+                  *
                 FROM 
                     adm_activos act GROUP BY act.idAdmActivo";
     try {

@@ -50,6 +50,36 @@ $app->get('/api/usuariosgerencia/{idGerencia}', function (Request $request, Resp
     }
 });
 
+
+$app->get('/api/usuario/{idGerencia}/{idConfigCargo}', function (Request $request, Response $response) {
+
+    $idGerencia = $request->getAttribute('idGerencia');
+    $idConfigCargo = $request->getAttribute('idConfigCargo');
+
+    $consulta = "SELECT seg_usuarios.*,
+                (cargos.idConfigGerencia)  idGerencia,
+                (CONCAT(seg_usuarios.primerNombre, ' ', seg_usuarios.primerApellido)) nombre_completo
+                 FROM seg_usuarios 
+                    JOIN config_cargos cargos ON cargos.idConfigCargo = seg_usuarios.idConfigCargo
+                        AND cargos.idConfigCargo = $idConfigCargo
+                 WHERE cargos.idConfigGerencia = $idGerencia
+                 and seg_usuarios.estatus = 1";
+
+    try {
+
+        $db = new db();
+
+        $db = $db->conectar();
+        $ejecutar = $db->query($consulta);
+        $users = $ejecutar->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+
+        echo json_encode($users);
+    } catch (PDOException $error) {
+        echo '{"error": {"text":' . $error->getMessage() . '}}';
+    }
+});
+
 $app->get('/api/ip', function (Request $request, Response $response) {
 
 
@@ -76,8 +106,9 @@ $app->get('/api/usuarios/{id}', function (Request $request, Response $response) 
     $id = $request->getAttribute('id');
 
     $consulta = "SELECT *, 
-    (SELECT cargos.idConfigGerencia FROM config_cargos cargos WHERE cargos.idConfigCargo = seg_usuarios.idConfigCargo) idGerencia 
-        FROM seg_usuarios WHERE idSegUsuario = $id";
+                    (SELECT cargos.idConfigGerencia FROM config_cargos cargos WHERE cargos.idConfigCargo = seg_usuarios.idConfigCargo) idGerencia,
+                    (CONCAT(seg_usuarios.primerNombre, ' ', seg_usuarios.primerApellido)) nombre_completo 
+                FROM seg_usuarios WHERE idSegUsuario = $id";
 
     try {
 
@@ -407,9 +438,9 @@ $app->post('/api/subirimgpropia/{archAnterior}', function (Request $request, Res
 
         //Cambiar el tamaño de la imagen una vez guardada en la carpeta
         //es posible que aqui sea elproblema 
-         $resize = new ResizeImage("../public/subidos/fotosusers/$uploadFileName");
-        $resize->resizeTo(200, 200);
-        $resize->saveImage("../public/subidos/fotosusers/$uploadFileName"); 
+        // $resize = new ResizeImage("../public/subidos/fotosusers/$uploadFileName");
+        // $resize->resizeTo(200, 200);
+        // $resize->saveImage("../public/subidos/fotosusers/$uploadFileName"); 
     }
     //echo json_encode($newfile);
     echo '{"nombreArchivo": "' . $uploadFileName . '"}';

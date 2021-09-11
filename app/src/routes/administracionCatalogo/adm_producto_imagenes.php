@@ -31,6 +31,28 @@ $app->get('/api/productos/{id}/imagenes', function (Request $request, Response $
     }
 });
 
+$app->get('/api/productos/img-yainsertada/{nombre}', function (Request $request, Response $response) {
+
+    $nombreimg = $request->getAttribute('nombre');
+
+    $consulta = "SELECT * FROM 
+                        adm_producto_imagenes 
+                WHERE titulo LIKE '%$nombreimg%'";
+
+    try {
+
+        $db = new db();
+
+        $db = $db->conectar();
+        $ejecutar = $db->query($consulta);
+        $result = $ejecutar->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+
+        $response->withJson($result);
+    } catch (PDOException $error) {
+        echo '{"error": {"text":' . $error->getMessage() . '}}';
+    }
+});
 
 
 $app->post('/api/productos/imagenes', function (Request $request, Response $response) {

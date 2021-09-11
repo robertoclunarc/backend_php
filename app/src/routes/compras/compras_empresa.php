@@ -26,9 +26,19 @@ $app->get('/api/empresacompras', function(Request $request, Response $response){
 
 $app->get('/api/empresacomprastodas', function(Request $request, Response $response){
 
-    $consulta = "SELECT * FROM compras_empresa ORDER BY cerrada, IdComprasEmpresa";
+    $consulta = "SELECT * FROM compras_empresa";
 
     try{
+
+        // $db = new db();
+
+        // $db = $db->conectar();
+        // $ejecutar = $db->query($consulta);
+        // $users = $ejecutar->fetchAll(PDO::FETCH_OBJ);
+        // $db = null;
+
+        // echo json_encode($users);
+        //echo $users;
 
         $db = new db();
 
@@ -38,7 +48,6 @@ $app->get('/api/empresacomprastodas', function(Request $request, Response $respo
         $db = null;
 
         echo json_encode($users);
-
     }
     catch(PDOException $error){
         echo '{"error": {"text":' .$error->getMessage() .'}}';  

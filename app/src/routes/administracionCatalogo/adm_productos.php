@@ -93,6 +93,7 @@ $app->post('/api/productos/busqueda', function (Request $request, Response $resp
         LEFT JOIN 
             adm_unidad_medidas um ON p.idAdmUnidadMedida = um.idAdmUnidadMedida
     WHERE " . $where . ' and p.activo=1';
+    
 
 	try {
 
@@ -223,7 +224,7 @@ $app->get('/api/productossolped/{idConfigGerencia}/{idActivo}/{campo}/{valor}', 
 	$campo = $request->getAttribute('campo');
 	$valor = $request->getAttribute('valor');
 
-/* 	$consulta = "SELECT apli.idConfigGerencia,
+	/* 	$consulta = "SELECT apli.idConfigGerencia,
 	                    apli.idAreaTrabajoGerencia,
 	                    p.codigo,
 	                    p.nombre,
@@ -240,10 +241,11 @@ $app->get('/api/productossolped/{idConfigGerencia}/{idActivo}/{campo}/{valor}', 
 				        AND idAdmActivo = $idActivo) negocios ON negocios.idGenAreaNegocio = area2.idGenAreaNegocio)
                 areas ON areas.idAreaTrabajo = apli.idAreaTrabajoGerencia
 				WHERE apli.idConfigGerencia = $idConfigGerencia"; */
-				
+
 	$consulta = "SELECT p.codigo,
 	                    p.nombre,
-	                    p.uso
+	                    p.uso,
+						(select nombre FROM adm_unidad_medidas u WHERE u.idAdmUnidadMedida = p.idAdmUnidadMedida ) as nombreUnidadMedida
                 FROM adm_productos p               
                 WHERE 1 = 1 AND aprobado = 1 AND validado = 1";
 	$group = " GROUP BY p.codigo";    //cambiado miesntras
@@ -364,6 +366,7 @@ $app->post('/api/productos', function (Request $request, Response $response) {
 	$idGerenciaModificacion = $request->getParam("idGerenciaModificacion");
 	$idGerenciaAprobacion = $request->getParam("idGerenciaAprobacion");
 	$idGerenciaValidacion = $request->getParam("idGerenciaValidacion");
+	$nro_parte = $request->getParam("nro_parte");
 
 	$consulta = "INSERT INTO adm_productos
                     (
@@ -399,7 +402,8 @@ $app->post('/api/productos', function (Request $request, Response $response) {
                         idGerenciaCreacion,
 	                    idGerenciaModificacion,
 	                    idGerenciaAprobacion,
-	                    idGerenciaValidacion
+	                    idGerenciaValidacion,
+						nro_parte
                     )
                     VALUES
                     (
@@ -435,7 +439,8 @@ $app->post('/api/productos', function (Request $request, Response $response) {
                         :idGerenciaCreacion,
 	                    :idGerenciaModificacion,
 	                    :idGerenciaAprobacion,
-	                    :idGerenciaValidacion
+	                    :idGerenciaValidacion,
+						:nro_parte
                     )";
 
 	try {
@@ -477,6 +482,7 @@ $app->post('/api/productos', function (Request $request, Response $response) {
 		$sentencia->bindParam(":idGerenciaModificacion", $idGerenciaModificacion);
 		$sentencia->bindParam(":idGerenciaAprobacion", $idGerenciaAprobacion);
 		$sentencia->bindParam(":idGerenciaValidacion", $idGerenciaValidacion);
+		$sentencia->bindParam(":nro_parte", $nro_parte);
 
 
 
@@ -530,7 +536,7 @@ $app->put('/api/productos/{id}', function (Request $request, Response $response)
 	$idGerenciaCreacion = $request->getParam("idGerenciaCreacion");
 	$idGerenciaModificacion = $request->getParam("idGerenciaModificacion");
 	$idGerenciaAprobacion = $request->getParam("idGerenciaAprobacion");
-	$idGerenciaValidacion = $request->getParam("idGerenciaValidacion");
+	$nro_parte = $request->getParam("nro_parte");
 
 
 	$consulta = "UPDATE adm_productos 
@@ -567,7 +573,8 @@ $app->put('/api/productos/{id}', function (Request $request, Response $response)
                         idGerenciaCreacion= :idGerenciaCreacion,
                         idGerenciaModificacion = :idGerenciaModificacion,
                         idGerenciaAprobacion = :idGerenciaAprobacion,
-                        idGerenciaValidacion = :idGerenciaValidacion
+                        idGerenciaValidacion = :idGerenciaValidacion,
+                        nro_parte = :nro_parte
 
                  WHERE 
                     idAdmProducto = :idAdmProducto"; //left join adm_producto
@@ -613,6 +620,8 @@ $app->put('/api/productos/{id}', function (Request $request, Response $response)
 		$sentencia->bindParam(":idGerenciaModificacion", $idGerenciaModificacion);
 		$sentencia->bindParam(":idGerenciaAprobacion", $idGerenciaAprobacion);
 		$sentencia->bindParam(":idGerenciaValidacion", $idGerenciaValidacion);
+		$sentencia->bindParam(":nro_parte", $nro_parte);
+
 
 		$sentencia->bindParam(":idAdmProducto", $idAdmProducto);
 
@@ -636,7 +645,7 @@ $app->put('/api/productos/soloalmacen/{id}', function (Request $request, Respons
 	$caducidad = $request->getParam("caducidad");
 	$reciclable = $request->getParam("reciclable");
 	$peligroso = $request->getParam("peligroso");
-	
+
 
 	$idUsuarioModAlmacen = $request->getParam("idUsuarioModAlmacen");
 	$ultimaModAlmacen = $request->getParam("ultimaModAlmacen");

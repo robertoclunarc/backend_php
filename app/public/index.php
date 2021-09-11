@@ -58,26 +58,28 @@ require '../src/routes/configuraciones/config_empre_geren_area.php';
 
 //////////////////////////////////////////////////////////
 
-// Recursos de Solicitudes
-//
+// Recursos de Ticket de servicio
 require '../src/routes/ticketservicio/ts_estados_ticket.php';
 require '../src/routes/ticketservicio/ts_ticket_servicio.php';
 require '../src/routes/ticketservicio/ts_traza_ticket_servicio.php';
+require '../src/routes/generales/gen_preguntas.php';
+require '../src/routes/generales/gen_respuestas.php';
 //////////////////////////////////////////////////////////
 
-// Recursos de Notificaciones
-//
 
+// Notificaciones
 require '../src/routes/nsNotificacionServicio/nsNotificacionServicio.php';
+//////////////////////////////////////////////////////////
 
+// Ticket de Facturacin y administrativo
 require '../src/routes/sparrow_config.php';
 require '../src/routes/conta_reports.php';
 require '../src/routes/nomi_reports.php';
 require '../src/routes/adm_ventas_facturacion.php';
+//////////////////////////////////////////////////////////
+
 
 // Catalogo de Productos
-//
-
 require '../src/routes/administracionCatalogo/adm_color_producto.php';
 require '../src/routes/administracionCatalogo/adm_materiales_producto.php';
 require '../src/routes/administracionCatalogo/adm_grupos.php';
@@ -107,14 +109,11 @@ require '../src/routes/administracionCatalogo/config_gerencias.php';
 require '../src/routes/compras/compras_sol_ped.php';
 require '../src/routes/compras/compras_sol_ped_detalle.php';
 require '../src/routes/compras/compras_sol_ped_trazas.php';
+require '../src/routes/compras/compras_sol_ped_estados.php';
+require '../src/routes/compras/compras_empresa.php';
 require '../src/routes/generales/gen_centro_costos.php';
 require '../src/routes/generales/gen_empresa.php';
-require '../src/routes/generales/gen_preguntas.php';
-require '../src/routes/generales/gen_respuestas.php';
-require '../src/routes/compras/compras_empresa.php';
 require '../src/routes/generales/gen_area_negocio.php';
-require '../src/routes/compras/compras_sol_ped_estados.php';
-
 
 //////////////////////////////////////////////////////////
 

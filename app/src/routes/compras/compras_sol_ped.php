@@ -71,6 +71,7 @@ $app->post('/api/solped', function (Request $request, Response $response) {
 
 
     $fechaAOrdenC         = $request->getParam('fechaAOrdenC');
+    $fechaRequerida         = $request->getParam('fechaRequerida');
     $idTicketServicio    = $request->getParam('idTicketServicio');
     $idEstadoActual    = $request->getParam('idEstadoActual');
     $estadoactual    = $request->getParam('estadoActual');
@@ -78,6 +79,8 @@ $app->post('/api/solped', function (Request $request, Response $response) {
     $idConfigGerencia    = $request->getParam('idConfigGerencia');
     $idAdmActivo    = $request->getParam('idAdmActivo');
     $descripcion    = $request->getParam('descripcion');
+    $idUsuarioRegistro    = $request->getParam('idUsuarioRegistro');
+    $justificacion    = $request->getParam('justificacion');
 
     $consulta = "INSERT INTO compras_solped 
                     (   
@@ -88,7 +91,10 @@ $app->post('/api/solped', function (Request $request, Response $response) {
                         idSolpedPadre ,
                         idConfigGerencia,
                         idAdmActivo,
-                        descripcion                 
+                        descripcion,
+                        idUsuarioRegistro,
+                        justificacion,
+                        fechaRequerida                
                     ) 
                 VALUES 
                     (   
@@ -99,7 +105,10 @@ $app->post('/api/solped', function (Request $request, Response $response) {
                         :idSolpedPadre,
                         :idConfigGerencia,
                         :idAdmActivo,
-                        :descripcion
+                        :descripcion,
+                        :idUsuarioRegistro,
+                        :justificacion,
+                        :fechaRequerida
                     ) ";
 
     try {
@@ -109,6 +118,7 @@ $app->post('/api/solped', function (Request $request, Response $response) {
 
         $stmt = $db->prepare($consulta);
         $stmt->bindParam(':fechaAOrdenC', $fechaAOrdenC);
+        $stmt->bindParam(':fechaRequerida', $fechaRequerida);
         $stmt->bindParam(':idTicketServicio', $idTicketServicio);
         $stmt->bindParam(':idEstadoActual', $idEstadoActual);
         $stmt->bindParam(':estadoActual', $estadoactual);
@@ -116,6 +126,8 @@ $app->post('/api/solped', function (Request $request, Response $response) {
         $stmt->bindParam(':idConfigGerencia', $idConfigGerencia);
         $stmt->bindParam(':idAdmActivo', $idAdmActivo);
         $stmt->bindParam(':descripcion', $descripcion);
+        $stmt->bindParam(':idUsuarioRegistro', $idUsuarioRegistro);
+        $stmt->bindParam(':justificacion', $justificacion);
         $stmt->execute();
 
         $id = $db->lastInsertId();
@@ -131,9 +143,17 @@ $app->post('/api/solped', function (Request $request, Response $response) {
         $cargo = array('ObjectId' => $id);
         $db = null;
         echo json_encode($cargo);
-        
+        // $response->getBody()->write($cargo);
+        // return $response
+        //     ->withHeader('Content-Type', 'application/json')
+        //     ->withStatus(201);
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
+        // $datosError = array('status' => 'error', 'data' => $error->getMessage());
+        // $response->getBody()->write($datosError);
+        // return $response
+        //     ->withHeader('Content-Type', 'application/json')
+        //     ->withStatus(400);
     }
 });
 

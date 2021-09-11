@@ -9,7 +9,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Http\UploadedFile;
 
-
+//#migrado
 $app->get('/api/tickets', function (Request $request, Response $response) {
 
     $consulta = "SELECT * FROM ts_ticket_servicio ";
@@ -32,6 +32,7 @@ $app->get('/api/tickets', function (Request $request, Response $response) {
     }
 });
 
+//#migrado
 $app->get('/api/tickets2', function (Request $request, Response $response) {
 
     $consulta = "SELECT * FROM ts_ticket_servicio";
@@ -50,6 +51,7 @@ $app->get('/api/tickets2', function (Request $request, Response $response) {
     }
 });
 
+//#migrado
 $app->post('/api/rolesinsertaruno', function (Request $request, Response $response) {
 
     $codigo = $request->getParam("codigo");
@@ -104,6 +106,7 @@ $app->post('/api/rolesinsertaruno', function (Request $request, Response $respon
     }
 });
 
+//#migrado
 $app->get('/api/tickettrazas/{id}', function (Request $request, Response $response) {
 
     $id_ticket = $request->getAttribute('id');
@@ -128,7 +131,7 @@ $app->get('/api/tickettrazas/{id}', function (Request $request, Response $respon
 });
 
 //ticketsporusr
-
+//#migardo
 $app->get('/api/ticketsporusr/{idUsuario}', function (Request $request, Response $response) {
 
     $idSegUsuario = $request->getAttribute('idUsuario');
@@ -148,6 +151,7 @@ $app->get('/api/ticketsporusr/{idUsuario}', function (Request $request, Response
     }
 });
 
+//#migrado
 $app->get('/api/ticketsporgerencia/{idgerencia}', function (Request $request, Response $response) {
 
     $idgerencia = $request->getAttribute('idgerencia');
@@ -169,10 +173,10 @@ $app->get('/api/ticketsporgerencia/{idgerencia}', function (Request $request, Re
     }
 });
 
-$app->get('/api/algo', function (Request $request, Response $response) {
+// $app->get('/api/algo', function (Request $request, Response $response) {
 
-    echo '{"error": {"text":' . "algo" . '}}';
-});
+//     echo '{"error": {"text":' . "algo" . '}}';
+// });
 
 $app->get('/api/ticketshisRecibidos/{idgerencia}', function (Request $request, Response $response) {
     $idgerencia = $request->getAttribute('idgerencia');
@@ -218,6 +222,9 @@ $app->get('/api/ticketshisEnviados/{idgerencia}', function (Request $request, Re
     }
 });
 
+///-----------------------
+
+//#migraado
 $app->get('/api/ticketsenviados/{idgerencia}', function (Request $request, Response $response) {
 
     $idgerencia = $request->getAttribute('idgerencia');
@@ -259,12 +266,7 @@ $app->get('/api/ticketsrecibidos/{idgerencia}/{idusuario}', function (Request $r
                     OR (tickets.idGerenciaDestino IN (SELECT gt.idConfigGerencia FROM config_gerencias_temporales gt WHERE gt.idSegUsuario = $idusuario))
                 ORDER BY orden, tickets.idEstadoActual ASC, tickets.idTicketServicio DESC";
 
-    /*AND tickets.estadoActual <> 'Registrado'
-AND tickets.estadoActual <> 'Anulado'
-AND tickets.estadoActual <> 'Rechazado'
-AND tickets.IdEstadoActual <> '6'
-AND tickets.IdEstadoActual <> '9'
- */
+    
     try {
         $db = new db();
         $db = $db->conectar();
@@ -307,7 +309,7 @@ $app->get('/api/imagenyaregistrada/{nombre_imagen}', function (Request $request,
 
     $consulta = "SELECT * FROM ts_imgs_ticket_servicio im
                     INNER JOIN ts_ticket_servicio tk ON im.idTicketServicio = tk.idTicketServicio
-                WHERE nombre_imagen = '$nombre' AND (tk.idEstadoActual <> 8 AND tk.idEstadoActual <> 7)
+                WHERE nombre_imagen LIKE '%$nombre%' AND (tk.idEstadoActual <> 8 AND tk.idEstadoActual <> 7)
                 LIMIT 1";
 
     try {
@@ -317,7 +319,7 @@ $app->get('/api/imagenyaregistrada/{nombre_imagen}', function (Request $request,
         $ejecutar = $db->query($consulta);
         $noticias = $ejecutar->fetchAll(PDO::FETCH_OBJ);
         $db = null;
-
+       //print_r($nombre);
         echo json_encode($noticias);
     } catch (PDOException $error) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
@@ -340,6 +342,7 @@ $app->post('/api/ticket', function (Request $request, Response $response) {
     $idServiciosGerencias = $request->getParam('idServiciosGerencias');
     $idAssets = $request->getParam('idAssets');
     $idSegUsuarioOrigen = $request->getParam('idSegUsuarioOrigen');
+    $idSolpedCompras = $request->getParam('idSolpedCompras');
 
     $consulta = "INSERT INTO ts_ticket_servicio
                     (
@@ -355,7 +358,8 @@ $app->post('/api/ticket', function (Request $request, Response $response) {
                         idSegUsuario,
                         idServiciosGerencias,
                         idAssets,
-                        idSegUsuarioOrigen
+                        idSegUsuarioOrigen,
+                        idSolpedCompras
                     )
                     VALUES
                     (
@@ -371,7 +375,8 @@ $app->post('/api/ticket', function (Request $request, Response $response) {
                         :idSegUsuario,
                         :idServiciosGerencias,
                         :idAssets,
-                        :idSegUsuarioOrigen
+                        :idSegUsuarioOrigen,
+                        :idSolpedCompras
                     )";
 
     try {
@@ -393,6 +398,7 @@ $app->post('/api/ticket', function (Request $request, Response $response) {
         $stmt->bindParam(':idServiciosGerencias', $idServiciosGerencias);
         $stmt->bindParam(':idAssets', $idAssets);
         $stmt->bindParam(':idSegUsuarioOrigen', $idSegUsuarioOrigen);
+        $stmt->bindParam(':idSolpedCompras', $idSolpedCompras);
 
         $stmt->execute();
 
@@ -471,6 +477,37 @@ $app->put('/api/ticket/{id}', function (Request $request, Response $response) {
         echo '{"error": {"text":' . $error->getMessage() . '}}';
     }
 });
+
+$app->put('/api/ticket-solped/{id}', function (Request $request, Response $response) {
+
+    $id = $request->getAttribute('id');
+
+    $idSolpedCompras = $request->getParam('idSolpedCompras');
+   
+    $consulta = "UPDATE ts_ticket_servicio SET
+                    idSolpedCompras                 = :idSolpedCompras
+                    WHERE idTicketServicio = :id";
+
+    try {
+
+        $db = new db();
+        $db = $db->conectar();
+
+        $stmt = $db->prepare($consulta);
+        //$stmt->bindParam(':fechaAlta', $fechaAlta);
+        $stmt->bindParam(':idSolpedCompras', $idSolpedCompras);     
+
+        $stmt->bindParam(':id', $id);
+
+        $stmt->execute();
+        $db = null;
+
+        echo '{"message": {"text": "Ticket actualizado correctamente"}}';
+    } catch (PDOException $error) {
+        echo '{"error": {"text":' . $error->getMessage() . '}}';
+    }
+});
+
 
 $app->delete('/api/ticket/{id}', function (Request $request, Response $response) {
 
